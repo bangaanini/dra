@@ -1,65 +1,63 @@
-import Image from "next/image";
+import Link from "next/link";
+import { DramaExplorer } from "@/components/drama-explorer";
 
 export default function Home() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <main className="flex flex-1 px-6 py-10 text-stone-900">
+      <div className="mx-auto flex w-full max-w-7xl flex-col gap-8">
+        <section className="grid gap-6 overflow-hidden rounded-[2rem] border border-stone-200/80 bg-white/90 p-8 shadow-[0_24px_80px_rgba(76,56,35,0.08)] md:grid-cols-[minmax(0,1fr)_280px] md:p-10">
+          <div className="flex flex-col gap-6">
+            <span className="w-fit rounded-full bg-stone-950 px-4 py-1 text-xs font-semibold uppercase tracking-[0.24em] text-stone-50">
+              Explorer
+            </span>
+            <div className="max-w-3xl space-y-4">
+              <h1 className="text-4xl font-semibold tracking-tight md:text-6xl">
+                Operasikan semua provider drama lewat satu kontrak API.
+              </h1>
+              <p className="max-w-2xl text-base leading-7 text-stone-600 md:text-lg">
+                Halaman utama sekarang difokuskan sebagai workspace operasional:
+                pilih provider, cek feed, buka detail, uji stream, dan salin
+                request normalized yang nanti dipakai dari web lain.
+              </p>
+            </div>
+            <div className="flex flex-wrap gap-3">
+              <Link
+                href="#explorer"
+                className="rounded-full bg-stone-950 px-5 py-3 text-sm font-semibold text-stone-50 transition hover:bg-stone-800"
+              >
+                Open Explorer
+              </Link>
+              <Link
+                href="/docs"
+                className="rounded-full border border-stone-300 px-5 py-3 text-sm font-semibold text-stone-700 transition hover:border-stone-500 hover:bg-stone-50"
+              >
+                Read Docs
+              </Link>
+            </div>
+          </div>
+
+          <div className="grid gap-3">
+            <HeroStat label="Use case" value="Proxy + frontend consumer" />
+            <HeroStat label="Contract" value="Ganti provider saja" />
+            <HeroStat label="Deploy target" value="Vercel public API" />
+          </div>
+        </section>
+
+        <div id="explorer">
+          <DramaExplorer />
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
+      </div>
+    </main>
+  );
+}
+
+function HeroStat({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="rounded-[1.5rem] border border-stone-200 bg-stone-50 px-5 py-5">
+      <div className="text-[11px] font-semibold uppercase tracking-[0.22em] text-stone-500">
+        {label}
+      </div>
+      <div className="mt-2 text-lg font-semibold text-stone-900">{value}</div>
     </div>
   );
 }
