@@ -1,8 +1,10 @@
 import { fetchUpstreamJson } from "@/lib/drama/client";
+import { ApiError } from "@/lib/drama/errors";
 import type { ProviderAdapter } from "@/lib/drama/types";
 import {
   createDramaEpisode,
   createEnvelope,
+  getNumber,
   proxiedStreamSource,
   toNumber,
 } from "@/lib/drama/utils";
@@ -103,22 +105,36 @@ export const goodshortAdapter: ProviderAdapter = {
       case "stream": {
         const id = requireId(context);
         const lang = getLang(context);
+        const episode = getNumber(context.searchParams, "episode", 1) ?? 1;
         const payload = await fetchUpstreamJson<GoodshortStreamResponse>(
           providerUrl(`/goodshort/stream?bookId=${id}&lang=${lang}`),
         );
 
+        const selectedChapter = (payload.data.downloadList ?? []).find((item) => {
+          const chapterNumber = item.index + 1;
+          const chapterNameNumber = toNumber(item.chapterName);
+
+          return chapterNumber === episode || chapterNameNumber === episode;
+        });
+
+        if (!selectedChapter) {
+          throw new ApiError("Episode not found", 404);
+        }
+
         return createEnvelope(context, {
           dramaId: id,
-          streams: (payload.data.downloadList ?? []).flatMap((item) =>
-            (item.multiVideos ?? [])
-              .filter((video) => video.filePath)
-              .map((video) =>
-                proxiedStreamSource(context.origin, video.filePath, {
-                  label: `${item.chapterName ?? item.index + 1} ${video.type ?? ""}`.trim(),
-                  quality: video.type,
-                }),
-              ),
-          ),
+          episodeId: String(selectedChapter.id),
+          episodeNumber: selectedChapter.index + 1,
+          title: selectedChapter.chapterName,
+          posterUrl: selectedChapter.image,
+          streams: (selectedChapter.multiVideos ?? [])
+            .filter((video) => video.filePath)
+            .map((video) =>
+              proxiedStreamSource(context.origin, video.filePath, {
+                label: `${selectedChapter.chapterName ?? selectedChapter.index + 1} ${video.type ?? ""}`.trim(),
+                quality: video.type,
+              }),
+            ),
           subtitles: [],
         });
       }

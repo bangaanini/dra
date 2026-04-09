@@ -53,6 +53,14 @@ export const dramawaveAdapter: ProviderAdapter = {
         return createEnvelope(context, {
           ...normalizeBookSections(context, payload.data, {
             sectionTitle: () => "Dramawave",
+            bookFilter: (book) => {
+              const itemType =
+                typeof book.item_type === "string"
+                  ? book.item_type.trim().toLowerCase()
+                  : "";
+
+              return !["anime", "novel"].includes(itemType);
+            },
           }),
           page,
         });
@@ -70,6 +78,14 @@ export const dramawaveAdapter: ProviderAdapter = {
         return createEnvelope(context, {
           ...normalizeBookSections(context, payload.data, {
             sectionTitle: () => `Search: ${query}`,
+            bookFilter: (book) => {
+              const itemType =
+                typeof book.item_type === "string"
+                  ? book.item_type.trim().toLowerCase()
+                  : "";
+
+              return !["anime", "novel"].includes(itemType);
+            },
           }),
           page,
           keyword: query,

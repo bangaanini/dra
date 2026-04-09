@@ -142,6 +142,7 @@ export function normalizeBookSections(
     sectionId?: (section: Record<string, unknown>, index: number) => string;
     booksKey?: string;
     bookIdKey?: string;
+    bookFilter?: (book: GenericBook, section: Record<string, unknown>, index: number) => boolean;
   },
 ): ListPayload {
   const booksKey = options?.booksKey ?? "books";
@@ -153,6 +154,7 @@ export function normalizeBookSections(
       const books = Array.isArray(section[booksKey]) ? section[booksKey] : [];
       const items = books
         .filter((book): book is GenericBook => Boolean(book && typeof book === "object"))
+        .filter((book) => options?.bookFilter?.(book, section, index) ?? true)
         .map((book) => mapGenericBook(context, book, bookIdKey));
 
       return {
